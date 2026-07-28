@@ -4,6 +4,7 @@ default:
 
 stages:
   - build
+  - test
   - deploy
 
 # Executa em MRs e também em commits na branch principal
