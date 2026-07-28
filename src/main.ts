@@ -29,8 +29,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('talent-api', app, document);
 
+  // Inicia os microserviços (RabbitMQ)
   await app.startAllMicroservices();
-  await app.listen(process.env.PORT ?? 4000);
+
+  // Define a porta dinâmica da variável de ambiente ou usa 4000 como fallback local
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+
+  //IMPORTANTE: Adicionar '0.0.0.0' para expor a interface de rede no container
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 
-bootstrap();
+void bootstrap();
