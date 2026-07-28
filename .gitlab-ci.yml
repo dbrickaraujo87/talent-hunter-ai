@@ -8,6 +8,7 @@ build-job:
   stage: build
   script:
     - echo "Executando build..."
+    - npm install
     - npm run build
 
 # Executa testes unitários
