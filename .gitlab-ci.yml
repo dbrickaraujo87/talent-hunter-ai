@@ -1,5 +1,6 @@
 default:
   image: node:20 #imagem node
+  before_script: npm ci
 
 stages:
   - build
@@ -11,7 +12,6 @@ build-job:
   stage: build
   script:
     - echo "Executando build..."
-    - npm install
     - npm run build
 
 # Executa testes unitários
