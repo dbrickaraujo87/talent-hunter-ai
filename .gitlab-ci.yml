@@ -1,0 +1,44 @@
+default:
+  image: node:20 #imagem node
+
+stages:
+  - build
+  - test
+  - deploy
+
+# Executa em MRs e também em commits na branch principal
+build-job:
+  stage: build
+  script:
+    - echo "Executando build..."
+    - npm install
+    - npm run build
+
+# Executa testes unitários
+unit-test-job:
+  stage: test
+  script:
+    - echo "Executando testes unitários..."
+    - npm test
+
+# Executa validação de lint
+lint-test-job:
+  stage: test
+  script:
+    - echo "Executando lint..."
+    - npm run lint
+
+deploy-dev:
+  stage: deploy
+  script:
+     - echo "Publicando em dev..."
+  when: manual
+
+# SÓ executa se o commit for mesclado na branch principal (produção)
+deploy-job:
+  stage: deploy
+  environment: production
+  script:
+    - echo "Implantando aplicação em produção..."
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
