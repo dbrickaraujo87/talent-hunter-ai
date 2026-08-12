@@ -1,19 +1,10 @@
-import {
-  Body,
-  Get,
-  Injectable,
-  UnauthorizedException,
-  Req,
-} from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Body, Injectable, UnauthorizedException, Req } from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Auth } from './entities/auth.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
-import { Public } from './decorators/public.decorator';
 
 @Injectable()
 export class AuthService {

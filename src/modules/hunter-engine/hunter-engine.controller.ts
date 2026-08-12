@@ -1,15 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Body } from '@nestjs/common';
 import { HunterEngineService } from './hunter-engine.service';
-import { CreateHunterEngineDto } from './dto/create-hunter-engine.dto';
-import { UpdateHunterEngineDto } from './dto/update-hunter-engine.dto';
 
 @Controller('hunter-engine')
 export class HunterEngineController {

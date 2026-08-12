@@ -24,6 +24,13 @@ export class JobsService {
     try {
       this.logger.log(`Creating job with title: ${createJobDto.title}`);
 
+      const job = this.jobRepository.create(createJobDto);
+
+      if (!job) {
+        this.logger.error('Failed to create job entity from DTO');
+        throw new Error('Failed to create job entity from DTO');
+      }
+
       const payload = JobsService.toJobCreatedPayload(createJobDto);
       this.logger.log('send job to persistence service');
 

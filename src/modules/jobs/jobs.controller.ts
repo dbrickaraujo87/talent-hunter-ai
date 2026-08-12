@@ -13,7 +13,6 @@ import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { DomainEvents } from '../../shared/messaging/constants/events.constant';
-import { SharedDataBaseModule } from '../../shared/database/database.module';
 
 @Controller('jobs')
 export class JobsController {

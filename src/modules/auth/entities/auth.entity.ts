@@ -7,9 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { hash, compare } from 'bcrypt'; // Import bcrypt for password hashing
+import { hash } from 'bcrypt'; // Import bcrypt for password hashing
 import { UserRole } from '../../../shared/enums/user-role.enum'; // Import the UserRoles enum
-import { Company } from '../../companies/entities/company.entity';
 
 @Entity('auth')
 export class Auth {
