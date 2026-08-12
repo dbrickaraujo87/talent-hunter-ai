@@ -1,16 +1,41 @@
 {
-    "vhosts": [
-        {
-            "name": "/"
-        }
-    ],
-    "permissions": [
-        {
-            "user": "admin",
-            "vhost": "/",
-            "configure": ".*",
-            "write": ".*",
-            "read": ".*"
-        }
-    ]
+  "rabbit_version": "3.13.7",
+  "rabbitmq_version": "3.13.7",
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "E0SI/uWbRq8NPdd7xFVnxKrA1Sajy3qDxHC6ohjwr5gC0Lgn",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+        "administrator"
+      ],
+      "limits": {}
+    }
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "queues": [
+    {
+      "name": "talent_hunter_api_queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {},
+      "type": "classic"
+    }
+  ],
+  "exchanges": [],
+  "bindings": []
 }

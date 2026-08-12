@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { RabbitMQQueue } from './shared/messaging/constants/events.constant';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +14,7 @@ async function bootstrap() {
       urls: [
         process.env.RABBITMQ_URL || 'amqp://admin:admin123@localhost:5672', // <-- Credenciais corretas aqui
       ],
-      queue: 'cats_queue',
+      queue: RabbitMQQueue.API_GATEWAY, // <-- Nome da fila
       queueOptions: {
         durable: true,
       },

@@ -11,7 +11,9 @@ describe('ProfileEnricherController', () => {
       providers: [ProfileEnricherService],
     }).compile();
 
-    controller = module.get<ProfileEnricherController>(ProfileEnricherController);
+    controller = module.get<ProfileEnricherController>(
+      ProfileEnricherController,
+    );
   });
 
   it('should be defined', () => {

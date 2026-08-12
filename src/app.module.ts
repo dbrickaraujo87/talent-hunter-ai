@@ -11,6 +11,7 @@ import { JobsModule } from './modules/jobs/jobs.module';
 import { HunterEngineModule } from './modules/hunter-engine/hunter-engine.module';
 import { CandidatesModule } from './modules/candidates/candidates.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { SharedDataBaseModule } from './shared/database/database.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from './modules/auth/auth.module';
     MatchingModule,
     OutreachModule,
     ProfileEnricherModule,
+    SharedDataBaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

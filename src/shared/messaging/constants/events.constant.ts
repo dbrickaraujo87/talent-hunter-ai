@@ -3,6 +3,7 @@
 export const RABBITMQ_CONSTANTS = 'talent_hunter_exchange';
 
 export enum RabbitMQQueue {
+  API_GATEWAY = 'talent_hunter_api_queue',
   AI_JOB_ANALYZER = 'ai_analyzer_job_queue',
   HUNTER_ENGINE = 'hunter_engine_search_queue',
   PROFILE_ENRICHER = 'profile_enricher_queue',
@@ -23,5 +24,9 @@ export interface JobCreatedPayload {
   jobId: string;
   title: string;
   description: string;
+  salary: number;
+  location: string;
+  seniority: string;
+  requiredSkills: string[];
   companyId: string;
 }
