@@ -22,7 +22,9 @@ describe('JobsService', () => {
   let service: JobsService;
   let proxyRouterService: jest.Mocked<ProxyRouterService>;
 
-  const mockJobRepository = {};
+  const mockJobRepository = {
+    create: jest.fn().mockReturnValue({}),
+  };
 
   const mockProxyRouterService = {
     dispatchJobCreated: jest.fn(),
