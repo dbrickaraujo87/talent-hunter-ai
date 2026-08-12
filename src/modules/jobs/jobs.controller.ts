@@ -8,19 +8,16 @@ import {
   Delete,
   Logger,
 } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
-import { DomainEvents } from '../../shared/messaging/constants/events.constant';
 
 @Controller('jobs')
 export class JobsController {
   private readonly logger = new Logger(JobsController.name);
   constructor(private readonly jobsService: JobsService) {}
 
-  @Post()
-  @EventPattern(DomainEvents.JOB_CREATED)
+  @Post('criar')
   create(@Body() createJobDto: CreateJobDto) {
     if (!createJobDto) {
       this.logger.error(

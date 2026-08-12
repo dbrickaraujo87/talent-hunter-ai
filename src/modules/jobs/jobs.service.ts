@@ -24,14 +24,24 @@ export class JobsService {
     try {
       this.logger.log(`Creating job with title: ${createJobDto.title}`);
 
-      const job = this.jobRepository.create(createJobDto);
+      // Instancia entidade de banco
+      const jobEntity = this.jobRepository.create(createJobDto);
+      jobEntity.id = crypto.randomUUID();
 
-      if (!job) {
+      if (!jobEntity) {
         this.logger.error('Failed to create job entity from DTO');
         throw new Error('Failed to create job entity from DTO');
       }
+      //salva unidade em banco
+      const savedJob = await this.jobRepository
+        .save(jobEntity)
+        .catch((error) => {
+          this.logger.error('Failed to save job to the database', error);
+          throw error;
+        });
 
-      const payload = JobsService.toJobCreatedPayload(createJobDto);
+      const payload = JobsService.toJobCreatedPayload(savedJob);
+
       this.logger.log('send job to persistence service');
 
       this.logger.log(
@@ -62,9 +72,9 @@ export class JobsService {
   }
 
   //#region Private Methods
-  private static toJobCreatedPayload(job: CreateJobDto): JobCreatedPayload {
+  private static toJobCreatedPayload(job: Job): JobCreatedPayload {
     return {
-      jobId: crypto.randomUUID(),
+      jobId: job.id,
       title: job.title,
       description: job.description,
       companyId: job.companyId,

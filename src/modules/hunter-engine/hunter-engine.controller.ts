@@ -1,4 +1,5 @@
 import { Controller, Body } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
 import { HunterEngineService } from './hunter-engine.service';
 
 @Controller('hunter-engine')

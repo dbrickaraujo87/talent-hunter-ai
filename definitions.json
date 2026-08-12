@@ -26,16 +26,7 @@
       "read": ".*"
     }
   ],
-  "queues": [
-    {
-      "name": "talent_hunter_api_queue",
-      "vhost": "/",
-      "durable": true,
-      "auto_delete": false,
-      "arguments": {},
-      "type": "classic"
-    }
-  ],
+  "queues": [],
   "exchanges": [],
   "bindings": []
 }

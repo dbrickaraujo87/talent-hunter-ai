@@ -12,12 +12,14 @@ import { HunterEngineModule } from './modules/hunter-engine/hunter-engine.module
 import { CandidatesModule } from './modules/candidates/candidates.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SharedDataBaseModule } from './shared/database/database.module';
+import { SharedMessagingModule } from './shared/messaging/shared-messaging.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // isGlobal: tru. carrega o .env para toda a aplicação
+      isGlobal: true,
     }),
+    SharedMessagingModule,
     AiAnalyzerModule,
     AuthModule,
     CandidatesModule,
