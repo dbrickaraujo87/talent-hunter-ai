@@ -1,19 +1,14 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ObjectIdColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ObjectId } from 'mongodb';
 
 @Entity('jobs')
 export class Job {
-  @ObjectIdColumn()
-  _id!: ObjectId;
-
-  @Column({ nullable: true })
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column({ nullable: false })

@@ -1,9 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Configuração do CORS para permitir requisições de qualquer origem
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // remove propriedades não definidas no DTO
+      forbidNonWhitelisted: true, // lança um erro se houver propriedades não definidas no DTO
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Talent Hunter API')

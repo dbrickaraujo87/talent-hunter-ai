@@ -1,23 +1,30 @@
-import { Body, Injectable, UnauthorizedException, Req } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Auth } from './entities/auth.entity';
+import { User } from '../users/entities/users.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger: Logger = new Logger(AuthService.name);
+
   constructor(
-    @InjectRepository(Auth)
-    private readonly authRepository: Repository<Auth>,
+    @InjectRepository(User)
+    private readonly authRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<Auth> {
+  async validateUser(email: string, pass: string): Promise<User> {
+    if (!email || !pass) {
+      this.logger.warn('Email and password are required for validation');
+      throw new UnauthorizedException('Email and password are required');
+    }
     const user = await this.authRepository.findOne({ where: { email } });
 
     if (!user) {
+      this.logger.warn(`User not found for email: ${email}`);
       throw new UnauthorizedException('User not found');
     }
 
@@ -29,7 +36,7 @@ export class AuthService {
     return user;
   }
 
-  async login(@Body() loginDto: LoginDto) {
+  async login(loginDto: LoginDto) {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
     // Informação pública gravada DENTRO do token JWT
@@ -51,8 +58,10 @@ export class AuthService {
     };
   }
 
-  getProfile(@Req() req: any) {
-    const userId = req.params.userId;
+  getProfile(userId: string) {
+    if (!userId) {
+      throw new UnauthorizedException('User ID is required');
+    }
     return this.authRepository.findOne({ where: { id: userId } });
   }
 }

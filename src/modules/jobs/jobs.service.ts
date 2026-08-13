@@ -56,7 +56,7 @@ export class JobsService {
   }
 
   findAll() {
-    return `This action returns all jobs`;
+    return 'This action returns all jobs';
   }
 
   findOne(id: number) {

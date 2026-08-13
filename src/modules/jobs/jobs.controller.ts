@@ -1,11 +1,11 @@
 import {
   Controller,
-  Get,
   Post,
-  Body,
+  Get,
   Patch,
-  Param,
   Delete,
+  Body,
+  Param,
   Logger,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';

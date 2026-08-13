@@ -73,7 +73,7 @@ describe('AuthController', () => {
       const profileResult = { id: userId, email: 'test@example.com' };
       authService.getProfile.mockResolvedValue(profileResult as any);
 
-      const result = await controller.getProfile(userId);
+      const result = await controller.getProfile({ user: { sub: userId } });
 
       expect(authService.getProfile).toHaveBeenCalledWith(userId);
       expect(result).toEqual(profileResult);
@@ -82,7 +82,9 @@ describe('AuthController', () => {
     it('should return null when authService.getProfile returns null', async () => {
       authService.getProfile.mockResolvedValue(null);
 
-      const result = await controller.getProfile('non-existent-id');
+      const result = await controller.getProfile({
+        user: { sub: 'non-existent-id' },
+      });
 
       expect(result).toBeNull();
     });

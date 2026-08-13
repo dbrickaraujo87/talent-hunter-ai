@@ -8,17 +8,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mongodb',
-
-        host: configService.get<string>('MONGO_HOST'),
-        port: Number(configService.get<number>('MONGO_PORT')),
-        username: configService.get<string>('MONGO_USERNAME'),
-        password: configService.get<string>('MONGO_PASSWORD'),
-        database: configService.get<string>('MONGO_DB_NAME'),
-        authSource: 'admin',
-        useUnifiedTopology: true,
-        autoLoadEntities: true, //Carrega automaticamente entidades cadastradas nos módulos
-        synchronize: configService.get<string>('NODE_ENV') !== 'production', // Apenas em dev! Em prod use migrations
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: Number(configService.get<number>('DB_PORT')),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        url: configService.get<string>('DB_URL'),
+        autoLoadEntities: true,
+        synchronize: configService.get<string>('NODE_ENV') !== 'production',
       }),
     }),
   ],

@@ -5,19 +5,20 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
-import { Auth } from './entities/auth.entity';
+import { User } from '../users/entities/users.entity';
 import { UserRole } from '../../shared/enums/user-role.enum';
 import { LoginDto } from './dto/login.dto';
 
 jest.mock('bcrypt');
 
-const mockAuth: Auth = {
+const mockAuth: User = {
   id: 'uuid-1',
   email: 'test@example.com',
   password: 'hashed_password',
   role: UserRole.RECRUITER,
   companyId: 'company-1',
   name: 'Test User',
+  isActive: true,
   createdAt: new Date('2024-01-01'),
   updatedAt: new Date('2024-01-01'),
   hashPassword: jest.fn(),
@@ -25,7 +26,7 @@ const mockAuth: Auth = {
 
 describe('AuthService', () => {
   let service: AuthService;
-  let authRepository: jest.Mocked<Repository<Auth>>;
+  let authRepository: jest.Mocked<Repository<User>>;
   let jwtService: jest.Mocked<JwtService>;
 
   const mockAuthRepository = {
@@ -40,13 +41,13 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: getRepositoryToken(Auth), useValue: mockAuthRepository },
+        { provide: getRepositoryToken(User), useValue: mockAuthRepository },
         { provide: JwtService, useValue: mockJwtService },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    authRepository = module.get(getRepositoryToken(Auth));
+    authRepository = module.get(getRepositoryToken(User));
     jwtService = module.get(JwtService);
   });
 
@@ -144,11 +145,10 @@ describe('AuthService', () => {
   });
 
   describe('getProfile', () => {
-    it('should return the user matching the userId in req.params', async () => {
-      const req = { params: { userId: 'uuid-1' } };
+    it('should return the user matching the given userId', async () => {
       authRepository.findOne.mockResolvedValue(mockAuth);
 
-      const result = await service.getProfile(req);
+      const result = await service.getProfile('uuid-1');
 
       expect(authRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'uuid-1' },
@@ -157,10 +157,9 @@ describe('AuthService', () => {
     });
 
     it('should return null when the user is not found', async () => {
-      const req = { params: { userId: 'non-existent-id' } };
       authRepository.findOne.mockResolvedValue(null);
 
-      const result = await service.getProfile(req);
+      const result = await service.getProfile('non-existent-id');
 
       expect(result).toBeNull();
     });

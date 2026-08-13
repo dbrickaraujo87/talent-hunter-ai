@@ -23,7 +23,8 @@ describe('JobsService', () => {
   let proxyRouterService: jest.Mocked<ProxyRouterService>;
 
   const mockJobRepository = {
-    create: jest.fn().mockReturnValue({}),
+    create: jest.fn().mockImplementation((dto) => ({ ...dto })),
+    save: jest.fn().mockImplementation((entity) => Promise.resolve(entity)),
   };
 
   const mockProxyRouterService = {

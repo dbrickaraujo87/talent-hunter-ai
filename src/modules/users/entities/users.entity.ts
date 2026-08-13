@@ -1,12 +1,12 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeInsert,
+  PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
-  BeforeInsert,
 } from 'typeorm';
 import { hash } from 'bcrypt';
 import { UserRole } from '../../../shared/enums/user-role.enum';
