@@ -21,7 +21,16 @@ export class AuthService {
       this.logger.warn('Email and password are required for validation');
       throw new UnauthorizedException('Email and password are required');
     }
-    const user = await this.authRepository.findOne({ where: { email } });
+    const user = await this.authRepository.findOne({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        role: true,
+        companyId: true,
+      },
+    });
 
     if (!user) {
       this.logger.warn(`User not found for email: ${email}`);
@@ -62,6 +71,20 @@ export class AuthService {
     if (!userId) {
       throw new UnauthorizedException('User ID is required');
     }
-    return this.authRepository.findOne({ where: { id: userId } });
+    return this.authRepository.findOne({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        companyId: true,
+        isActive: true,
+        createdAt: true,
+      },
+      where: {
+        id: userId,
+        isActive: true,
+      },
+    });
   }
 }

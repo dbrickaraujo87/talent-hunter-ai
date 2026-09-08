@@ -15,6 +15,11 @@ import { HunterEngineModule } from './modules/hunter-engine/hunter-engine.module
 import { CandidatesModule } from './modules/candidates/candidates.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SharedDataBaseModule } from './shared/database/database.module';
+import { UserModule } from './user/user.module';
+import { UsersModule } from './users/users.module';
+import { UsersModule } from './modules/users/users.module';
+import { UsersModule } from './users/users.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -45,6 +50,8 @@ import { SharedDataBaseModule } from './shared/database/database.module';
     OutreachModule,
     ProfileEnricherModule,
     SharedDataBaseModule,
+    UserModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: JwtAuthGuard }],

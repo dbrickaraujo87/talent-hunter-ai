@@ -1,8 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 import { CreateJobDto } from './dto/create-job.dto';
-import { UpdateJobDto } from './dto/update-job.dto';
 import { ProxyRouterService } from '../../shared/messaging/proxy-router.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JobCreatedPayload } from '../../shared/messaging/constants/events.constant';
@@ -20,6 +25,7 @@ export class JobsService {
   async create(createJobDto: CreateJobDto) {
     if (!createJobDto) {
       this.logger.error('createJobDto is required');
+      throw new BadRequestException('createJobDto is required');
     }
     try {
       this.logger.log(`Creating job with title: ${createJobDto.title}`);
@@ -30,16 +36,23 @@ export class JobsService {
 
       if (!jobEntity) {
         this.logger.error('Failed to create job entity from DTO');
-        throw new Error('Failed to create job entity from DTO');
+        throw new InternalServerErrorException(
+          'Failed to create job entity from DTO',
+        );
       }
+
       //salva unidade em banco
       const savedJob = await this.jobRepository
         .save(jobEntity)
-        .catch((error) => {
+        .catch((error: InternalServerErrorException) => {
           this.logger.error('Failed to save job to the database', error);
-          throw error;
+          throw new InternalServerErrorException(
+            'Failed to save job to the database',
+            error,
+          );
         });
 
+      // Converte entidade para payload do evento
       const payload = JobsService.toJobCreatedPayload(savedJob);
 
       this.logger.log('send job to persistence service');
@@ -48,27 +61,22 @@ export class JobsService {
         `Dispatching job created event with payload: ${JSON.stringify(payload)}`,
       );
 
-      return this.proxyRouterService.dispatchJobCreated(payload);
+      // Dispara evento de criação de job
+      await this.proxyRouterService
+        .dispatchJobCreated(payload)
+        .catch((error: InternalServerErrorException) => {
+          this.logger.error('Failed to dispatch job created event', error);
+          throw new InternalServerErrorException(
+            'Failed to dispatch job created event',
+            error,
+          );
+        });
+
+      return savedJob;
     } catch (error) {
       this.logger.error('Failed to create job', error);
-      throw error;
+      throw new InternalServerErrorException('Failed to create job');
     }
-  }
-
-  findAll() {
-    return 'This action returns all jobs';
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} job`;
-  }
-
-  update(id: number, updateJobDto: UpdateJobDto) {
-    return `This action updates a #${id} job`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} job`;
   }
 
   //#region Private Methods

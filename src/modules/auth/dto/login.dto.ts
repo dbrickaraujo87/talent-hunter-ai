@@ -1,4 +1,9 @@
-import { IsNotEmpty, IsString, IsEmail } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsEmail,
+  IsStrongPassword,
+} from 'class-validator';
 
 export class LoginDto {
   @IsNotEmpty({ message: 'Email is required' })
@@ -7,14 +12,19 @@ export class LoginDto {
   email!: string;
 
   @IsNotEmpty({ message: 'Password is required' })
+  @IsStrongPassword(
+    {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    {
+      message:
+        'Password must be at least 8 characters and include uppercase, lowercase, number, and symbol',
+    },
+  )
   @IsString()
-  // @IsStrongPassword({
-  // minLength: 8,
-  // minLowercase: 1,
-  // minUppercase: 1,
-  // minNumbers: 1,
-  // minSymbols: 1,
-  // message: 'Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character',
-  // })
   password!: string;
 }

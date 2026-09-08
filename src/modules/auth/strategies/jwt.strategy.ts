@@ -6,11 +6,16 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService) {
+    //super é usado para chamar o construtor da classe pai (PassportStrategy) e passar as opções de configuração para a estratégia JWT.
     super({
       // Extrai o token do cabeçalho "Authorization: Bearer <TOKEN>"
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false, // Rejeita tokens expirados automaticamente
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'defaultSecret', // Use a default secret if not provided
+      // O TypeScript infere automaticamente que o retorno é 'string' (não undefined)
+      // e autocompleta as chaves válidas:
+      secretOrKey: configService.getOrThrow<string>('JWT_SECRET', {
+        infer: true,
+      }),
     });
   }
 

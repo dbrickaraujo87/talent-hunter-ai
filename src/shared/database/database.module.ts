@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -16,10 +18,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         database: configService.get<string>('DB_NAME'),
         url: configService.get<string>('DB_URL'),
         autoLoadEntities: true,
-        synchronize: configService.get<string>('NODE_ENV') !== 'production',
+        // Sincroniza o esquema do banco de dados automaticamente em desenvolvimento
+        synchronize: isDevelopment,
+        // Executa as migrations automaticamente em produção
+        migrationsRun: !isDevelopment,
+        // Habilita o log de consultas em desenvolvimento
+        logging: isDevelopment,
       }),
     }),
   ],
-  exports: [TypeOrmModule], // Exporta o TypeOrmModule para que outros módulos possam usar a conexão com o banco de dados
+  // Exporta o TypeOrmModule para que outros módulos possam usar a conexão com o banco de dados
+  exports: [TypeOrmModule],
 })
 export class SharedDataBaseModule {}

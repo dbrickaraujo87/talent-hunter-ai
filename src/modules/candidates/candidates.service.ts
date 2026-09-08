@@ -1,26 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { CreateCandidateDto } from './dto/create-candidate.dto';
+import { Candidate } from './entities/candidate.entity';
 import { UpdateCandidateDto } from './dto/update-candidate.dto';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class CandidatesService {
+  private readonly logger: Logger = new Logger(CandidatesService.name);
+  constructor(private readonly candidateRepository: Repository<Candidate>) {}
   create(createCandidateDto: CreateCandidateDto) {
-    return 'This action adds a new candidate';
-  }
-
-  findAll() {
-    return `This action returns all candidates`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} candidate`;
-  }
-
-  update(id: number, updateCandidateDto: UpdateCandidateDto) {
-    return `This action updates a #${id} candidate`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} candidate`;
+    this.logger.log(`Creating candidate with name: ${createCandidateDto.name}`);
+    return;
   }
 }
