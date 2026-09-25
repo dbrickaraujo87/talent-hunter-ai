@@ -1,98 +1,188 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Talent Hunter AI
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API backend para uma plataforma de recrutamento orientada a eventos, criada para conectar empresas a candidatos de tecnologia e automatizar etapas do processo de seleção.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> **Status:** em desenvolvimento. A base atual utiliza NestJS, RabbitMQ e MongoDB, com módulos iniciais para candidatos e outreach e uma camada compartilhada de mensageria.
 
-## Description
+## Visão geral
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+O projeto propõe um fluxo de recrutamento no qual as empresas podem publicar oportunidades, processar informações de candidatos e, futuramente, automatizar matching, enriquecimento de perfis e comunicação.
 
-## Project setup
+A aplicação está estruturada como um monólito modular NestJS preparado para comunicação assíncrona. O RabbitMQ é usado como transporte de eventos de domínio, enquanto o MongoDB fornece a infraestrutura de persistência local definida no ambiente Docker.
 
-```bash
-$ npm install
+## Arquitetura atual
+
+```text
+Cliente / RH
+    │
+    ▼
+Aplicação NestJS
+    ├── API HTTP
+    │   ├── /candidates
+    │   └── /outreach
+    │
+    ├── Swagger
+    │   └── /talent-api
+    │
+    └── Microserviço RabbitMQ
+        └── fila cats_queue
+
+RabbitMQ
+    └── ProxyRouterService
+        └── eventos de domínio, como job.created
 ```
 
-## Compile and run the project
+O `ProxyRouterService` encapsula o envio de eventos para o RabbitMQ. As mensagens são publicadas com um envelope contendo timestamp, nome do evento e payload. A conexão é configurada por meio do token `RABBITMQ_CLIENT` e da variável `RABBITMQ_URL`.
 
-```bash
-# development
-$ npm run start
+## Stack
 
-# watch mode
-$ npm run start:dev
+- **Node.js + TypeScript**
+- **NestJS 11** para a API e organização modular
+- **RabbitMQ** para mensageria assíncrona
+- **MongoDB** para persistência local e futura integração com o domínio
+- **Mongoose / NestJS Mongoose** para modelagem de dados
+- **Swagger / OpenAPI** para documentação da API
+- **Jest + Supertest** para testes unitários e end-to-end
+- **Docker Compose** para subir MongoDB, Mongo Express e RabbitMQ
 
-# production mode
-$ npm run start:prod
+## Estrutura do projeto
+
+```text
+.
+├── src/
+│   ├── main.ts                         # Bootstrap HTTP, Swagger e RabbitMQ
+│   ├── app.module.ts                   # Módulo principal da aplicação
+│   ├── app.controller.ts               # Endpoint raiz
+│   ├── candidates/                     # Módulo inicial de candidatos
+│   │   ├── candidates.controller.ts
+│   │   ├── candidates.service.ts
+│   │   └── candidates.module.ts
+│   ├── outreach/                       # Módulo inicial de outreach
+│   │   ├── outreach.controller.ts
+│   │   ├── outreach.service.ts
+│   │   └── outreach.module.ts
+│   └── shared/messaging/               # Infraestrutura compartilhada de eventos
+│       ├── constants/events.constant.ts
+│       ├── interfaces/event-payloads.interface.ts
+│       ├── proxy-router.service.ts
+│       ├── rabbitmq.module.ts
+│       ├── rabbitmq.service.ts
+│       └── shared-messaging.module.ts
+├── test/                               # Testes end-to-end
+├── docker-compose.infra.yaml           # MongoDB, Mongo Express e RabbitMQ
+├── definitions.json                    # Definições do RabbitMQ
+├── package.json                        # Scripts e dependências
+└── tsconfig*.json                      # Configuração TypeScript
 ```
 
-## Run tests
+## Pré-requisitos
+
+- Node.js 18 ou superior
+- npm
+- Docker e Docker Compose
+
+## Configuração local
+
+1. Clone o repositório:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+git clone https://github.com/dbrickaraujo87/talent-hunter-ai.git
+cd talent-hunter-ai
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+2. Instale as dependências:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+3. Crie um arquivo `.env` na raiz do projeto:
 
-## Resources
+```env
+PORT=4000
+NODE_ENV=development
+RABBITMQ_URL=amqp://admin:admin123@localhost:5672
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+O RabbitMQ também utiliza esses valores no ambiente Docker:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- Usuário: `admin`
+- Senha: `admin123`
+- AMQP: `localhost:5672`
+- Painel web: `http://localhost:15672`
 
-## Support
+4. Suba a infraestrutura:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+docker compose -f docker-compose.infra.yaml up -d
+```
 
-## Stay in touch
+A infraestrutura disponibiliza:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+| Serviço | Endereço | Finalidade |
+| --- | --- | --- |
+| MongoDB | `localhost:27017` | Banco de dados |
+| Mongo Express | `http://localhost:8081` | Interface web do MongoDB |
+| RabbitMQ AMQP | `localhost:5672` | Transporte de mensagens |
+| RabbitMQ Management | `http://localhost:15672` | Administração do broker |
 
-## License
+5. Inicie a API em modo de desenvolvimento:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+npm run start:dev
+```
+
+A API estará disponível em `http://localhost:4000` e a documentação Swagger em `http://localhost:4000/talent-api`.
+
+## Scripts disponíveis
+
+```bash
+npm run start          # Inicia a aplicação
+npm run start:dev      # Inicia com watch mode
+npm run start:prod     # Executa a versão compilada
+npm run build          # Compila o projeto
+npm run lint           # Executa o ESLint
+npm run format         # Formata os arquivos TypeScript
+```
+
+## Testes
+
+```bash
+npm run test           # Testes unitários
+npm run test:watch     # Testes em modo watch
+npm run test:e2e       # Testes end-to-end
+npm run test:cov       # Testes com cobertura
+```
+
+O teste end-to-end atual valida o endpoint raiz `GET /`, que deve responder `Hello World!`.
+
+## Mensageria
+
+Os eventos são enviados pelo `ProxyRouterService` usando o cliente RabbitMQ configurado no módulo de mensageria. O padrão de mensagem possui o seguinte formato:
+
+```json
+{
+  "timestamp": "2026-01-01T00:00:00.000Z",
+  "event": "job.created",
+  "data": {}
+}
+```
+
+O evento `job.created` já possui um fluxo de despacho representado por `dispatchJobCreated`. Novos eventos podem ser adicionados em `src/shared/messaging/constants/events.constant.ts`, com seus payloads tipados em `src/shared/messaging/interfaces/event-payloads.interface.ts`.
+
+## Próximos passos
+
+- Implementar os casos de uso dos módulos de candidatos e outreach.
+- Adicionar schemas e repositories para MongoDB.
+- Evoluir o fluxo de eventos para análise de vagas, matching e enriquecimento de perfis.
+- Adicionar autenticação e autorização.
+- Expandir a documentação Swagger com os endpoints de negócio.
+- Ampliar a cobertura dos testes unitários e end-to-end.
+
+## Licença
+
+Este projeto ainda não possui uma licença open source definida.
+
+---
+
+Desenvolvido por **Davi Brick de Araújo**.
