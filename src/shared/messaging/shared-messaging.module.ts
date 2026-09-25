@@ -15,9 +15,7 @@ import {
     RabbitMQModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri:
-          configService.get<string>('RABBITMQ_URL') ||
-          'amqp://admin:admin123@localhost:5672',
+        uri: `amqp://${configService.get<string>('RABBITMQ_USER')}:${configService.get<string>('RABBITMQ_PASSWORD')}@${configService.get<string>('RABBITMQ_HOST')}:${configService.get<number>('RABBITMQ_PORT')}`,
         connectionInitOptions: { wait: false },
         exchanges: [
           {

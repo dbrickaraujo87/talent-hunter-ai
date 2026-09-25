@@ -16,7 +16,6 @@ const isDevelopment = process.env.NODE_ENV === 'development';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        url: configService.get<string>('DB_URL'),
         autoLoadEntities: true,
         // Sincroniza o esquema do banco de dados automaticamente em desenvolvimento
         synchronize: isDevelopment,

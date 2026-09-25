@@ -4,12 +4,17 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
   PrimaryGeneratedColumn,
+  Index,
 } from 'typeorm';
 
 @Entity('candidates')
 export class Candidate {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Index({ unique: true })
+  @Column({ type: 'int', generated: 'increment' })
+  code!: string;
 
   @Column({ nullable: false })
   name!: string;

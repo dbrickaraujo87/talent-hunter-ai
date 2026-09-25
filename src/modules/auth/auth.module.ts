@@ -4,13 +4,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 
-import { User } from '../users/entities/users.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
+    //serve para registrar o módulo de autenticação, incluindo o TypeOrmModule para a entidade User, o PassportModule e o JwtModule
     TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.registerAsync({

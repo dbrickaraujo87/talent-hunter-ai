@@ -3,7 +3,6 @@ import {
   Logger,
   BadRequestException,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';

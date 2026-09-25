@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
-import { User } from '../users/entities/users.entity';
+import { User } from '../users/entities/user.entity';
 import { UserRole } from '../../shared/enums/user-role.enum';
 import { LoginDto } from './dto/login.dto';
 
@@ -69,6 +69,13 @@ describe('AuthService', () => {
 
       expect(authRepository.findOne).toHaveBeenCalledWith({
         where: { email: 'notfound@example.com' },
+        select: {
+          id: true,
+          email: true,
+          password: true,
+          role: true,
+          companyId: true,
+        },
       });
     });
 
@@ -151,7 +158,16 @@ describe('AuthService', () => {
       const result = await service.getProfile('uuid-1');
 
       expect(authRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'uuid-1' },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          companyId: true,
+          isActive: true,
+          createdAt: true,
+        },
+        where: { id: 'uuid-1', isActive: true },
       });
       expect(result).toEqual(mockAuth);
     });

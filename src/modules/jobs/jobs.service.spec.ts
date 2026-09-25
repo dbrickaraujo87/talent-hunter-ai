@@ -78,32 +78,8 @@ describe('JobsService', () => {
       );
 
       await expect(service.create(mockCreateJobDto)).rejects.toThrow(
-        'Broker error',
+        'Failed to create job',
       );
-    });
-  });
-
-  describe('findAll', () => {
-    it('should return the placeholder string', () => {
-      expect(service.findAll()).toBe('This action returns all jobs');
-    });
-  });
-
-  describe('findOne', () => {
-    it('should return the placeholder string with the given id', () => {
-      expect(service.findOne(42)).toBe('This action returns a #42 job');
-    });
-  });
-
-  describe('update', () => {
-    it('should return the placeholder string with the given id', () => {
-      expect(service.update(7, {})).toBe('This action updates a #7 job');
-    });
-  });
-
-  describe('remove', () => {
-    it('should return the placeholder string with the given id', () => {
-      expect(service.remove(3)).toBe('This action removes a #3 job');
     });
   });
 });

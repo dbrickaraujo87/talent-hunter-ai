@@ -4,7 +4,7 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import * as Joi from 'joi';
+import * as Joi from 'joi'; // JOI SERVE PARA VALIDAR AS VARIÁVEIS DE AMBIENTE DO .ENV
 import { OutreachModule } from './modules/outreach/outreach.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { AiAnalyzerModule } from './modules/ai-analyzer/ai-analyzer.module';
@@ -15,11 +15,7 @@ import { HunterEngineModule } from './modules/hunter-engine/hunter-engine.module
 import { CandidatesModule } from './modules/candidates/candidates.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SharedDataBaseModule } from './shared/database/database.module';
-import { UserModule } from './user/user.module';
-import { UsersModule } from './users/users.module';
 import { UsersModule } from './modules/users/users.module';
-import { UsersModule } from './users/users.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -50,7 +46,6 @@ import { UsersModule } from './users/users.module';
     OutreachModule,
     ProfileEnricherModule,
     SharedDataBaseModule,
-    UserModule,
     UsersModule,
   ],
   controllers: [AppController],
